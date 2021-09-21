@@ -16,13 +16,21 @@
     <tbody>
       <tr
         class="border-b border-gray-200 hover:bg-gray-100 hover:bg-orange-100"
+        v-for="coin in assets"
+        :key="coin.id"
       >
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>
+          <img
+            :src="`https://static.coincap.io/assets/icons/${coin.symbol.toLowerCase()}@2x.png`"
+            :alt="coin.name"
+            :title="coin.name"
+          />
+        </td>
+        <td class="font-bold">#{{ coin.rank }}</td>
+        <td>{{ coin.name }}</td>
+        <td>{{ Number.parseFloat(coin.priceUsd).toFixed(4) }}</td>
+        <td>{{ Number.parseFloat(coin.marketCapUsd).toFixed(4) }}</td>
+        <td>{{ Number.parseFloat(coin.changePercent24Hr).toFixed(4) }}</td>
         <td class="hidden sm:block"></td>
       </tr>
     </tbody>

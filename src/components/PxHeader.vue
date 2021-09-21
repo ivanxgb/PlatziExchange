@@ -1,14 +1,14 @@
 <template>
   <header class="shadow w-screen">
     <nav>
-      <nav class="flex items-center justify-between flex-wrap bg-green-400 p-6">
+      <nav class="flex items-center justify-between flex-wrap bg-blue-400 p-6">
         <router-link
           to="/"
           class="flex items-center flex-shrink-0 text-white mr-6"
         >
           <px-icon class="mr-2"></px-icon>
           <span class="font-semibold text-xl tracking-tight"
-            >PlatziExchange</span
+            >Ivan-Exchange</span
           >
         </router-link>
         <div
