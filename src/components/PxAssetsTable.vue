@@ -23,14 +23,23 @@
           <img
             :src="`https://static.coincap.io/assets/icons/${coin.symbol.toLowerCase()}@2x.png`"
             :alt="coin.name"
-            :title="coin.name"
+            :title="coin.name + ' - ' + coin.symbol"
+            class="w-10 h-10"
           />
         </td>
         <td class="font-bold">#{{ coin.rank }}</td>
         <td>{{ coin.name }}</td>
-        <td>{{ Number.parseFloat(coin.priceUsd).toFixed(4) }}</td>
-        <td>{{ Number.parseFloat(coin.marketCapUsd).toFixed(4) }}</td>
-        <td>{{ Number.parseFloat(coin.changePercent24Hr).toFixed(4) }}</td>
+        <td>{{ coin.priceUsd | dollar }}</td>
+        <td>{{ coin.marketCapUsd | dollar }}</td>
+        <td
+          :class="
+            coin.changePercent24Hr.includes('-')
+              ? 'text-red-500'
+              : 'text-green-500'
+          "
+        >
+          {{ coin.changePercent24Hr | percent }}
+        </td>
         <td class="hidden sm:block"></td>
       </tr>
     </tbody>
