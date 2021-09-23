@@ -1,30 +1,27 @@
 const API_URL = "https://api.coincap.io/v2/assets";
 
-function getAssets() {
-  return fetch(`${API_URL}/?limit=20`)
-    .then((res) => res.json())
-    .then((res) => res.data)
-    .catch((e) => console.log(`Error al traer los datos. Error ${e}`));
+async function request(complement) {
+  const req = await fetch(`${API_URL}${complement}`);
+  const res = await req.json();
+  return await res.data;
 }
 
-function getAsset(coin) {
-  return fetch(`${API_URL}/${coin}`)
-    .then((res) => res.json())
-    .then((res) => res.data)
-    .catch((e) => console.log(`Error al traer los datos. Error ${e}`));
+async function getAssets() {
+  return await request("/?limit=20");
 }
 
-function getAssetHistory(coin) {
+async function getAsset(coin) {
+  return await request(`/${coin}`);
+}
+
+async function getAssetHistory(coin) {
   const now = new Date(); //Crea la fecha AHORA
   const end = now.getTime(); //obtiene la hora de la nueva fecha
   now.setDate(now.getDate() - 1); // setea la fecha creada a un día anterior
   const start = now.getTime();
-  return fetch(
-    `${API_URL}/${coin}/history?interval=h1&start=${start}&end=${end}`
-  )
-    .then((res) => res.json())
-    .then((res) => res.data)
-    .catch((e) => console.log(`Error al traer los datos. Error ${e}`));
+  const API_COMPLEMENT = `/${coin}/history?interval=h1&start=${start}&end=${end}`;
+
+  return await request(API_COMPLEMENT);
 }
 
 export default {

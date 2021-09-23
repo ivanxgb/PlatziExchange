@@ -18,8 +18,9 @@ export default {
     };
   },
 
-  created() {
-    API.getAssets().then((assets) => (this.assets = assets));
+  async created() {
+    this.assets = await API.getAssets();
+    //API.getAssets().then((assets) => (this.assets = assets));
   },
 };
 </script>

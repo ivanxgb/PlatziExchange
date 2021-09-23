@@ -115,8 +115,8 @@ export default {
     };
   },
 
-  created() {
-    this.getCoin();
+  async created() {
+    await this.getCoin();
   },
 
   computed: {
@@ -144,9 +144,9 @@ export default {
   },
 
   methods: {
-    getCoin() {
+    async getCoin() {
       const id = this.$route.params.id;
-      Promise.all([api.getAsset(id), api.getAssetHistory(id)]).then(
+      await Promise.all([api.getAsset(id), api.getAssetHistory(id)]).then(
         ([coin, history]) => {
           this.coin = coin;
           this.history = history;
