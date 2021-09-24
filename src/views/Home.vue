@@ -19,8 +19,8 @@ export default {
   },
 
   async created() {
-    this.assets = await API.getAssets();
-    //API.getAssets().then((assets) => (this.assets = assets));
+    let coins = await API.getAssets();
+    this.assets = coins;
   },
 };
 </script>

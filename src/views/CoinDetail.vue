@@ -116,7 +116,7 @@ export default {
   },
 
   async created() {
-    await this.getCoin();
+    this.getCoin();
   },
 
   computed: {
@@ -145,13 +145,10 @@ export default {
 
   methods: {
     async getCoin() {
-      const id = this.$route.params.id;
-      await Promise.all([api.getAsset(id), api.getAssetHistory(id)]).then(
-        ([coin, history]) => {
-          this.coin = coin;
-          this.history = history;
-        }
-      );
+      const id = await this.$route.params.id;
+      console.log("Id es: " + id);
+      this.coin = await api.getAsset(id);
+      this.history = await api.getAssetHistory(id);
     },
   },
 };
