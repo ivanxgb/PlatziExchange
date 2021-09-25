@@ -14,13 +14,21 @@
       rounded
     "
   >
-    <slot></slot>
+    <beat-loader :loading="isLoading" :color="'#63B3ED'" :size="8" />
+    <slot v-show="isLoading"></slot>
   </button>
 </template>
 
 <script>
 export default {
   name: "PxButton",
+
+  props: {
+    isLoading: {
+      typeof: Boolean,
+      default: false,
+    },
+  },
 
   methods: {
     methodClick() {

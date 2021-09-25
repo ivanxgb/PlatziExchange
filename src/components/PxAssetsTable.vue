@@ -15,7 +15,7 @@
     </thead>
     <tbody>
       <tr
-        class="border-b border-gray-200 hover:bg-gray-100 hover:bg-orange-100"
+        class="border-b border-gray-200 hover:bg-gray-100"
         v-for="coin in assets"
         :key="coin.id"
       >

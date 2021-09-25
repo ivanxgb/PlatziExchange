@@ -1,6 +1,13 @@
 <template>
   <div class="flex-col">
-    <template v-if="coin.id">
+    <div class="flex justify-center">
+      <bounce-loader
+        :loading="isLoading"
+        :color="blue"
+        :size="100"
+      ></bounce-loader>
+    </div>
+    <template v-if="!isLoading">
       <div class="flex flex-col sm:flex-row justify-around items-center">
         <div class="flex flex-col items-center">
           <img
@@ -99,19 +106,56 @@
           <span class="text-xl"></span>
         </div>
       </div>
+
+      <line-chart
+        class="my-10"
+        :color="blue"
+        :min="min"
+        :max="max"
+        :data="history.map((h) => [h.date, parseFloat(h.priceUsd).toFixed(2)])"
+      />
+
+      <h3 class="text-xl my-10">Mejores Ofertas de Cambio</h3>
+      <table>
+        <tr
+          v-for="m in markets"
+          class="border-b"
+          :key="`${m.exchangeId}-${m.priceUsd}`"
+        >
+          <td class="font-bold">{{ m.exchangeId }}</td>
+          <td>{{ m.priceUsd | dollar }}</td>
+          <td>{{ m.baseSymbol }} / {{ m.quoteSymbol }}</td>
+          <td>
+            <px-button
+              :isLoading="m.isLoading || false"
+              v-if="!m.url"
+              @custom-click="getExchange(m)"
+            >
+              <slot>Obtener web</slot>
+            </px-button>
+            <a v-else class="hover:underline text-green-600">{{ m.url }}</a>
+          </td>
+        </tr>
+      </table>
     </template>
   </div>
 </template>
 
 <script>
+import PxButton from "@/components/PxButton";
 import api from "@/api";
 export default {
   name: "CoinDetail",
+
+  components: { PxButton },
 
   data() {
     return {
       coin: {},
       history: [],
+      isLoading: true,
+      blue: "#63B3ED",
+      markets: [],
     };
   },
 
@@ -144,11 +188,21 @@ export default {
   },
 
   methods: {
+    async getExchange(exchange) {
+      this.$set(exchange, "isLoading", true);
+      console.log(exchange.exchangeId);
+      return await api
+        .getExchange(exchange.exchangeId)
+        .then((res) => this.$set(exchange, "url", res.exchangeUrl)) // this.$set(exchange, "url", res.exchangeUrl) set recibe por parametro: un objeto, una key a agregar y un valor
+        .finally(() => this.$set(exchange, "isLoading", false));
+    },
     async getCoin() {
       const id = await this.$route.params.id;
       console.log("Id es: " + id);
       this.coin = await api.getAsset(id);
       this.history = await api.getAssetHistory(id);
+      this.markets = await api.getMarket(id);
+      this.isLoading = false;
     },
   },
 };
