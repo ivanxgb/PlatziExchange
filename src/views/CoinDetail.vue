@@ -68,6 +68,7 @@
 
         <div class="my-10 sm:mt-0 flex flex-col justify-center text-center">
           <button
+            @click="toggleConverter"
             class="
               bg-green-500
               hover:bg-green-700
@@ -78,14 +79,15 @@
               rounded
             "
           >
-            Cambiar
+            {{ fromUsd ? `USD a ${coin.symbol}` : `${coin.symbol} a USD` }}
           </button>
 
           <div class="flex flex-row my-5">
-            <label class="w-full" for="converValue">
+            <label class="w-full" for="convertValue">
               <input
+                v-model="convertValue"
                 type="number"
-                id="converValue"
+                id="convertValue"
                 class="
                   text-center
                   bg-white
@@ -99,11 +101,15 @@
                   appearance-none
                   leading-normal
                 "
+                min="0"
+                :placeholder="`Valor en ${fromUsd ? 'USD' : coin.symbol}`"
               />
             </label>
           </div>
 
-          <span class="text-xl"></span>
+          <span class="text-xl">
+            {{ convertResult }} {{ fromUsd ? coin.symbol : "USD" }}
+          </span>
         </div>
       </div>
 
@@ -156,6 +162,8 @@ export default {
       isLoading: true,
       blue: "#63B3ED",
       markets: [],
+      fromUsd: true,
+      convertValue: null,
     };
   },
 
@@ -163,7 +171,23 @@ export default {
     this.getCoin();
   },
 
+  watch: {
+    $route() {
+      this.getCoin();
+    },
+  },
+
   computed: {
+    convertResult() {
+      if (!this.convertValue) {
+        return 0;
+      }
+      const result = this.fromUsd
+        ? this.convertValue / this.coin.priceUsd
+        : this.convertValue * this.coin.priceUsd;
+      return result.toFixed(4);
+    },
+
     min() {
       return Math.min(
         ...this.history.map((price) => parseFloat(price.priceUsd).toFixed(2))
@@ -188,6 +212,10 @@ export default {
   },
 
   methods: {
+    toggleConverter() {
+      this.fromUsd = !this.fromUsd;
+    },
+
     async getExchange(exchange) {
       this.$set(exchange, "isLoading", true);
       console.log(exchange.exchangeId);
@@ -196,7 +224,9 @@ export default {
         .then((res) => this.$set(exchange, "url", res.exchangeUrl)) // this.$set(exchange, "url", res.exchangeUrl) set recibe por parametro: un objeto, una key a agregar y un valor
         .finally(() => this.$set(exchange, "isLoading", false));
     },
+
     async getCoin() {
+      this.isLoading = true;
       const id = await this.$route.params.id;
       console.log("Id es: " + id);
       this.coin = await api.getAsset(id);
